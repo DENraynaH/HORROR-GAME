@@ -64,7 +64,7 @@ namespace StarterAssets
 		private float _jumpTimeoutDelta;
 		private float _fallTimeoutDelta;
 
-		public GameObject inventoryManager;
+		public GameObject MovementDisable;
 
 	
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
@@ -114,6 +114,7 @@ namespace StarterAssets
 
 		private void Update()
 		{
+			if (!MovementDisable.activeSelf) { return; }
 			JumpAndGravity();
 			GroundedCheck();
 			Move();
@@ -121,7 +122,7 @@ namespace StarterAssets
 
 		private void LateUpdate()
 		{
-            if (inventoryManager.activeSelf) { return; }
+            if (!MovementDisable.activeSelf) { return; }
             CameraRotation();
 		}
 

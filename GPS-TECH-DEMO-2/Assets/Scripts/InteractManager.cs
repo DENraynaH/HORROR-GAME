@@ -16,6 +16,8 @@ public class InteractManager : MonoBehaviour
     private Text playerTooltipText;
     private Text objectNameTooltipText;
 
+    private GameObject lastObjectHovered;
+
     private void Start()
     {
         playerTooltipText = playerTooltip.GetComponent<Text>();
@@ -36,16 +38,21 @@ public class InteractManager : MonoBehaviour
             playerCrosshair.color = Color.white;
             playerTooltip.SetActive(false);
             objectNameTooltip.SetActive(false);
+            if (lastObjectHovered != null) { lastObjectHovered.GetComponent<Outline>().OutlineMode = Outline.Mode.SilhouetteOnly; lastObjectHovered = null; }
             return; 
         }
-        GameObject objectHit = hitDetails.collider.gameObject;
-        Interactable interactable = objectHit.GetComponent<Interactable>();
+        lastObjectHovered = hitDetails.collider.gameObject;
+        Interactable interactable = lastObjectHovered.GetComponent<Interactable>();
 
         // < On Hover
         playerCrosshair.color = Color.red;
-        playerTooltip.SetActive(true); objectNameTooltip.SetActive(true);
-        playerTooltipText.text = interactable.toolTip;
-        objectNameTooltipText.text = interactable.displayName;
+        if (Controller.Instance.editTooltip == true) 
+        {
+            playerTooltipText.text = interactable.toolTip;
+            objectNameTooltipText.text = interactable.displayName;
+            playerTooltip.SetActive(true); objectNameTooltip.SetActive(true);
+        }
+        lastObjectHovered.GetComponent<Outline>().OutlineMode = Outline.Mode.OutlineVisible;
         // > On Hover
 
         if (Input.GetKeyDown(KeyCode.E))

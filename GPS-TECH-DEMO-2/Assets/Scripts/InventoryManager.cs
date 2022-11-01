@@ -92,9 +92,10 @@ public class InventoryManager : MonoBehaviour
     private void CloseInventory()
     {
         inventoryUI.SetActive(false);
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-        Time.timeScale = 1;
+        Controller.Instance.CursorToggle(false);
+        Controller.Instance.UnPauseGame();
+        Controller.Instance.CrosshairStatus(true);
+        Controller.Instance.TooltipToggle(true);
 
         foreach (GameObject inventorySprite in inventoryItemSprites)
         {
@@ -106,15 +107,17 @@ public class InventoryManager : MonoBehaviour
 
     private void OpenInventory()
     {
+        if (Time.timeScale == 0) { return; }
         for (int i = 0; i < currentInventory.Count; i++)
         {
             inventoryItemSprites[i].GetComponent<Image>().sprite = currentInventory[i].itemSprite;
             inventoryItemSprites[i].GetComponent<Image>().color = currentInventory[i].color;
         }
         inventoryUI.SetActive(true);
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
-        Time.timeScale = 0;
+        Controller.Instance.CursorToggle(true);
+        Controller.Instance.PauseGame();
+        Controller.Instance.CrosshairStatus(false);
+        Controller.Instance.TooltipToggle(false);
     }
 
 
