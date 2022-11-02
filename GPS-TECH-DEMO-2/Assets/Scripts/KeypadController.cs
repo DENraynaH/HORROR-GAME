@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class KeypadController : MonoBehaviour
 {
+    bool lockInput = false;
     public int codeSize = 4;
     public string correctCode = "9999";
 
@@ -48,12 +49,14 @@ public class KeypadController : MonoBehaviour
 
     public void KeyInput(string key)
     {
+        if (lockInput) { return; }
         if (currentCode.Length >= codeSize) { return; }
         currentCode += key;
     }
 
     public void DeleteLastInput()
     {
+        if (lockInput) { return; }
         if (currentCode.Length > 0) { currentCode = currentCode.Remove(currentCode.Length - 1); }
     }
 
@@ -73,6 +76,7 @@ public class KeypadController : MonoBehaviour
 
     private IEnumerator CorrectCodeRoutine()
     {
+        lockInput = true;
         onCorrectCode.Invoke();
         for (int i = 0; i < 3; i++)
         {
@@ -82,12 +86,14 @@ public class KeypadController : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
 
         }
-        ClearCode();
+        ClearCodeOverride();
         correctCodeRoutine = false;
+        lockInput = false;
     }
 
     private IEnumerator IncorrectCodeRoutine()
     {
+        lockInput = true;
         for (int i = 0; i < 3; i++)
         {
             backgroundPanel.color = Color.red;
@@ -96,17 +102,25 @@ public class KeypadController : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
 
         }
-        ClearCode();
+        ClearCodeOverride();
         correctCodeRoutine = false;
+        lockInput = false;
     }
 
     public void ClearCode()
+    {
+        if (lockInput) { return; }
+        currentCode = "";
+    }
+
+    public void ClearCodeOverride()
     {
         currentCode = "";
     }
 
     public void CheckCodeButton()
     {
+        if (lockInput) { return; }
         if (correctCodeRoutine == false) { CheckCode(); }
     }
 
