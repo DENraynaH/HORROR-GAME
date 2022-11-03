@@ -35,7 +35,7 @@ public class DoorOpen : MonoBehaviour
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.P)) { ToggleDoor(); }
-        transform.position = Vector3.Lerp(transform.position, target, doorSpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, target, doorSpeed * Time.deltaTime);
     }
 
     private void OnDrawGizmos()

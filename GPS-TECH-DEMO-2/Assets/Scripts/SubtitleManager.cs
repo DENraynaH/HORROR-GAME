@@ -11,7 +11,7 @@ public class SubtitleManager : MonoBehaviour
 
     private Text subtitleTextComponent;
     public GameObject subtitleObject;
-    public AudioClip subtitleClip;
+    public AudioSource subtitleClip;
     public string subtitleText;
 
     public float delayPerLetter;
@@ -26,15 +26,17 @@ public class SubtitleManager : MonoBehaviour
     {
         if (other.gameObject.layer != 8) { return; }
         if (onGoing) { return; } 
+        if (Controller.Instance.onGoingVoiceline == true) { return; }
         StartCoroutine(RunSubtitle());
     }
 
     IEnumerator RunSubtitle()
     {
+        Controller.Instance.onGoingVoiceline = true;
         onGoing = true;
         subtitleTextComponent.text = "";
         subtitleObject.SetActive(true);
-        //AudioClip.Play()
+        subtitleClip.Play();
         foreach (char letter in subtitleText)
         {
             yield return new WaitForSeconds(delayPerLetter);
@@ -43,6 +45,7 @@ public class SubtitleManager : MonoBehaviour
         yield return new WaitForSeconds(stayTimeBeforeDelete);
         subtitleObject.SetActive(false);
         onGoing = false;
+        Controller.Instance.onGoingVoiceline = false;
     }
 
 }

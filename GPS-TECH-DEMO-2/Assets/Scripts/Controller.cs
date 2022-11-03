@@ -12,9 +12,15 @@ public class Controller : MonoBehaviour
     public GameObject nameTooltip;
 
     public bool editTooltip;
+    public bool allowInteract;
+    public bool allowInventoryInput;
+    public bool onGoingVoiceline;
 
     private void Start()
     {
+        onGoingVoiceline = false;
+        allowInventoryInput = true;
+        allowInteract = true;
         editTooltip = true;
         Instance = this;
     }
@@ -45,5 +51,17 @@ public class Controller : MonoBehaviour
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
         }
+    }
+
+    public void ToggleInteractInput(bool status)
+    {
+        if (status) { allowInteract = true; }
+        else { allowInteract = false; }
+    }
+
+    public void ToggleInventoryInput(bool status)
+    {
+        if (status) { allowInventoryInput = true; }
+        else { allowInventoryInput = false; }
     }
 }

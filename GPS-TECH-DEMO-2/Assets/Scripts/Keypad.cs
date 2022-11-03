@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Keypad : Interactable
 {
-    bool isInteract = false;
+    public bool isInteract = false;
     public GameObject keypadCamera;
     public float CameraMoveDuration;
 
@@ -15,8 +15,11 @@ public class Keypad : Interactable
 
     public override void Interact()
     {
+        if (Controller.Instance.allowInteract == false) { return; }
+
         if (isInteract)
         {
+            Controller.Instance.ToggleInventoryInput(true);
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
             isInteract = false;
@@ -27,6 +30,7 @@ public class Keypad : Interactable
         }
         else
         {
+            Controller.Instance.ToggleInventoryInput(false);
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
             isInteract = true;

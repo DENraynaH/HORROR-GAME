@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -15,6 +16,7 @@ public class KeypadController : MonoBehaviour
     public Text keypadText;
     public Image backgroundPanel;
 
+    public GameObject cinematicCamera;
     public UnityEvent onCorrectCode;
     private bool correctCodeRoutine;
 
@@ -32,6 +34,7 @@ public class KeypadController : MonoBehaviour
 
     public void KeypadInput()
     {
+        if (keypad.isInteract == false) { return; }
         if (correctCodeRoutine) { return; }
         if (Input.GetKeyDown(KeyCode.Alpha0)) { KeyInput("0"); }
         if (Input.GetKeyDown(KeyCode.Alpha1)) { KeyInput("1"); }
@@ -76,8 +79,8 @@ public class KeypadController : MonoBehaviour
 
     private IEnumerator CorrectCodeRoutine()
     {
+        Controller.Instance.ToggleInteractInput(false);
         lockInput = true;
-        onCorrectCode.Invoke();
         for (int i = 0; i < 3; i++)
         {
             backgroundPanel.color = Color.green;
@@ -86,8 +89,13 @@ public class KeypadController : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
 
         }
+        cinematicCamera.SetActive(true);
+        onCorrectCode.Invoke();
         ClearCodeOverride();
         correctCodeRoutine = false;
+        yield return new WaitForSeconds(5f);
+        cinematicCamera.SetActive(false);
+        Controller.Instance.ToggleInteractInput(true);
         lockInput = false;
     }
 

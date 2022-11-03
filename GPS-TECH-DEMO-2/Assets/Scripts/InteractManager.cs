@@ -41,7 +41,10 @@ public class InteractManager : MonoBehaviour
             if (lastObjectHovered != null) { lastObjectHovered.GetComponent<Outline>().OutlineMode = Outline.Mode.SilhouetteOnly; lastObjectHovered = null; }
             return; 
         }
-        lastObjectHovered = hitDetails.collider.gameObject;
+
+
+        if (lastObjectHovered != null) { lastObjectHovered.GetComponent<Outline>().OutlineMode = Outline.Mode.SilhouetteOnly; }
+        lastObjectHovered = hitDetails.collider.gameObject; 
         Interactable interactable = lastObjectHovered.GetComponent<Interactable>();
 
         // < On Hover

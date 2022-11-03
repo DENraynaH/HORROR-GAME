@@ -35,6 +35,8 @@ public class InventoryManager : MonoBehaviour
 
     private void InventoryInputManager()
     {
+        if (Controller.Instance.allowInventoryInput == false) { return; }
+
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             if (inventoryUI.activeSelf) 
