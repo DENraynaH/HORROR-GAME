@@ -15,6 +15,9 @@ public class InventoryManager : MonoBehaviour
     public static List<InventoryItem> currentInventory = new List<InventoryItem>();
     public List<GameObject> inventoryItemSprites = new List<GameObject>();
 
+    public Text descriptionText;
+    public Text nameText;
+
     private void Start()
     {
         inventoryUI.SetActive(false);
@@ -27,6 +30,7 @@ public class InventoryManager : MonoBehaviour
     {
         debugList = currentInventory;
         InventoryInputManager();
+        AddItemDetails();
     }
 
     private void InventoryInputManager()
@@ -67,9 +71,9 @@ public class InventoryManager : MonoBehaviour
         }
     } 
 
-    public static void InventoryAdd(string itemName, int itemAmount, GameObject itemObject, Sprite itemSprite, Color color)
+    public static void InventoryAdd(string itemName, int itemAmount, GameObject itemObject, Sprite itemSprite, Color color, string description)
     {
-        if (!InventoryFull()) { currentInventory.Add(new InventoryItem(itemName, itemAmount, itemObject, itemSprite, color)); }
+        if (!InventoryFull()) { currentInventory.Add(new InventoryItem(itemName, itemAmount, itemObject, itemSprite, color, description)); }
     }
 
     public static bool InventoryFull()
@@ -99,6 +103,7 @@ public class InventoryManager : MonoBehaviour
 
         foreach (GameObject inventorySprite in inventoryItemSprites)
         {
+            inventorySprite.SetActive(false);
             inventorySprite.GetComponent<Image>().sprite = null;
             inventorySprite.GetComponent<Image>().color = Color.white;
         }
@@ -110,6 +115,7 @@ public class InventoryManager : MonoBehaviour
         if (Time.timeScale == 0) { return; }
         for (int i = 0; i < currentInventory.Count; i++)
         {
+            inventoryItemSprites[i].SetActive(true);
             inventoryItemSprites[i].GetComponent<Image>().sprite = currentInventory[i].itemSprite;
             inventoryItemSprites[i].GetComponent<Image>().color = currentInventory[i].color;
         }
@@ -118,6 +124,22 @@ public class InventoryManager : MonoBehaviour
         Controller.Instance.PauseGame();
         Controller.Instance.CrosshairStatus(false);
         Controller.Instance.TooltipToggle(false);
+    }
+
+    private void AddItemDetails()
+    {
+        if (GetHoveredItem() == null) { return; }
+        int hoveredSlot = GetSlotHovered();
+        if (currentInventory.ElementAtOrDefault(hoveredSlot) == null) 
+        {
+            descriptionText.text = "";
+            nameText.text = "";
+            return; 
+        }
+        InventoryItem hoveredItem = currentInventory[hoveredSlot];
+
+        descriptionText.text = hoveredItem.itemDescription;
+        nameText.text = hoveredItem.itemName;
     }
 
 
@@ -140,14 +162,16 @@ public class InventorySlot
 [Serializable]
 public class InventoryItem
 {
-    public InventoryItem(string itemName, int itemAmount, GameObject itemObject, Sprite itemSprite, Color color)
+    public InventoryItem(string itemName, int itemAmount, GameObject itemObject, Sprite itemSprite, Color color, string itemDescription)
     {
         this.itemName = itemName;
         this.itemAmount = itemAmount;
         this.itemObject = itemObject;
         this.itemSprite = itemSprite;
         this.color = color;
+        this.itemDescription = itemDescription;
     }
+    public string itemDescription;
     public string itemName;
     public int itemAmount;
     public GameObject itemObject;
